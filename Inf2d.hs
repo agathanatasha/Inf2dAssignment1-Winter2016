@@ -16,6 +16,7 @@ import Data.List
 import Debug.Trace
 import Data.Ord
 import Data.Maybe
+import Criterion.Main
 -- Type synonyms for the data structures
 -- Symbols are strings (a negative sign as the first character represents a negated symbol)
 type Symbol = String
@@ -225,7 +226,7 @@ dpll clauses symbols model
 -- input and returns true or false. 
 -- It uses the dpll function above to determine the satisability of its input sentence.
 dpllSatisfiable :: [Clause] -> Bool
-dpllSatisfiable clauses = dpll clauses (removeDuplicate (concat clauses)) []
+dpllSatisfiable clauses = dpll clauses (removeDuplicate [getUnsignedSymbol x | x <- concat clauses]) []
 
 ----------TASK 5: EVALUATION (5 marks)--------------------------------------------------------------
 -- EVALUATION
@@ -233,10 +234,10 @@ dpllSatisfiable clauses = dpll clauses (removeDuplicate (concat clauses)) []
 -- logic), and a query sentence. Both items should have their clauses in CNF representation 
 -- and should be assigned to the following respectively:
 evalKB :: [Sentence]
-evalKB = undefined
+evalKB = [[["-P11"],["Q21"]],[["P21"],["Q21"]]]
 
 evalQuery :: Sentence
-evalQuery = undefined
+evalQuery = [["P21", "Q21", "-P11"], ["Q21", "-P21"], ["P11", "-P21"]]
 
 
 -- RUNTIMES
