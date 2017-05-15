@@ -16,7 +16,9 @@ import Data.List
 import Debug.Trace
 import Data.Ord
 import Data.Maybe
-import Criterion.Main
+import System.TimeIt
+import Control.Exception.Base
+import System.IO.Unsafe
 -- Type synonyms for the data structures
 -- Symbols are strings (a negative sign as the first character represents a negated symbol)
 type Symbol = String
@@ -243,7 +245,14 @@ evalQuery = [["P21", "Q21", "-P11"], ["Q21", "-P21"], ["P11", "-P21"]]
 -- RUNTIMES
 -- Enter the average runtimes of the ttEntails and dpllSatisable functions respectively
 runtimeTtEntails :: Double
-runtimeTtEntails = undefined -- ttEntails evalKB evalQuery
+runtimeTtEntails = sum ([unsafePerformIO (timer (evaluate (ttEntails evalKB evalQuery))), unsafePerformIO (timer (evaluate (ttEntails evalKB evalQuery))), unsafePerformIO (timer (evaluate (ttEntails evalKB evalQuery))), unsafePerformIO (timer (evaluate (ttEntails evalKB evalQuery))), unsafePerformIO (timer (evaluate (ttEntails evalKB evalQuery)))])/5
 
 runtimeDpll :: Double
-runtimeDpll = undefined
+runtimeDpll = (sum [unsafePerformIO (timer (evaluate (dpllSatisfiable evalQuery))), unsafePerformIO (timer (evaluate (dpllSatisfiable evalQuery))), unsafePerformIO (timer (evaluate (dpllSatisfiable evalQuery))), unsafePerformIO (timer (evaluate (dpllSatisfiable evalQuery))), unsafePerformIO (timer (evaluate (dpllSatisfiable evalQuery)))])/5
+
+-- helper functions for the runtime functions
+-- Take the IO function as input and evaluate its runtime
+timer :: IO a -> IO Double
+timer ioa = do
+  (t,a) <- timeItT ioa
+  return  t
